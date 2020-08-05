@@ -37,6 +37,16 @@ public class MyJdkDynamicAopProxy implements InvocationHandler {
         return Proxy.newProxyInstance(this.getClass().getClassLoader(), this.support.getTargetClass().getInterfaces(), this);
     }
 
+    /**
+     * 功能描述: 重写invoke
+     *
+     * @创建人: 我恰芙蓉王
+     * @创建时间: 2020年08月05日 20:29:19
+     * @param proxy
+     * @param method
+     * @param args
+     * @return: java.lang.Object
+     **/
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
@@ -55,6 +65,7 @@ public class MyJdkDynamicAopProxy implements InvocationHandler {
         } catch (Exception e) {
             //调用异常通知
             invokeAdvice(advices.get("afterThrowing"));
+            throw e;
         }
 
         return result;

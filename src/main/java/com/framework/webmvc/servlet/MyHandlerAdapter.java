@@ -19,6 +19,16 @@ import java.util.Map;
 
 public class MyHandlerAdapter {
 
+    /**
+     * 功能描述: 进行参数适配
+     *
+     * @创建人: 我恰芙蓉王
+     * @创建时间: 2020年08月05日 19:41:38
+     * @param req
+     * @param resp
+     * @param mappedHandler
+     * @return: com.framework.webmvc.servlet.MyModelAndView
+     **/
     public MyModelAndView handle(HttpServletRequest req, HttpServletResponse resp, MyHandlerMapping mappedHandler) throws Exception {
 
         //保存参数的名称和位置
@@ -99,7 +109,6 @@ public class MyHandlerAdapter {
         } else if (mappedHandler.getMethod().getReturnType() == MyModelAndView.class) {
             return (MyModelAndView) result;
         }
-
         return null;
     }
 

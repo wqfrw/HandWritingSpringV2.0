@@ -18,7 +18,7 @@ import java.util.Properties;
 
 /**
  * @ClassName MyApplicationContext
- * @Description TODO(Spring容器封装)
+ * @Description TODO(Spring顶层容器封装)
  * @Author 我恰芙蓉王
  * @Date 2020年08月03日 19:22
  * @Version 2.0.0
@@ -28,8 +28,14 @@ public class MyApplicationContext {
 
     private String[] configLocations;
 
+    /**
+     * 解析配置文件的工具类
+     */
     private MyBeanDefinitionReader beanDefinitionReader;
 
+    /**
+     * BeanName与className的缓存
+     */
     private Map<String, MyBeanDefinition> beanDefinitionMap = new HashMap<>();
 
     /**
@@ -42,6 +48,14 @@ public class MyApplicationContext {
      */
     private Map<String, Object> factoryBeanObjectCache = new HashMap<>();
 
+   /**
+    * 功能描述: 初始化MyApplicationContext
+    *
+    * @创建人: 我恰芙蓉王
+    * @创建时间: 2020年08月03日 18:54:01
+    * @param configLocations
+    * @return:
+    **/
     public MyApplicationContext(String... configLocations) {
         this.configLocations = configLocations;
 
@@ -53,12 +67,11 @@ public class MyApplicationContext {
             //2.将解析后的BeanDefinition对象注册到beanDefinitionMap中
             doRegisterBeanDefinition(beanDefinitionList);
 
-            //3.触发创建对象的动作,调用getBean()方法
+            //3.触发创建对象的动作,调用getBean()方法(Spring默认是延时加载)
             doCreateBean();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -155,16 +168,10 @@ public class MyApplicationContext {
             if ("".equals(autowiredBeanName)) {
                 autowiredBeanName = field.getType().getName();
             }
-
             //强制访问
             field.setAccessible(true);
-
             try {
-
-                if (factoryBeanInstanceCache.get(autowiredBeanName) == null) {
-                    continue;
-                }
-
+                if (factoryBeanInstanceCache.get(autowiredBeanName) == null) { continue; }
                 //赋值
                 field.set(instance, this.factoryBeanInstanceCache.get(autowiredBeanName).getWrapperInstance());
             } catch (IllegalAccessException e) {
@@ -192,7 +199,7 @@ public class MyApplicationContext {
             instance = clazz.newInstance();
 
             /**
-             *  ===========接入AOP===========
+             *  ===========接入AOP begin===========
              */
             MyAdviceSupport support = instantiateAopConfig(beanDefinition);
             support.setTargetClass(clazz);
@@ -201,6 +208,9 @@ public class MyApplicationContext {
             if (support.pointCutMatch()) {
                 instance = new MyJdkDynamicAopProxy(support).getProxy();
             }
+            /**
+             * ===========接入AOP end===========
+             */
 
             factoryBeanObjectCache.put(beanName, instance);
         } catch (Exception e) {

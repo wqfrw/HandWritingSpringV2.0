@@ -34,12 +34,11 @@ public class MyDispatcherServlet extends HttpServlet {
         try {
             doDispatch(req, resp);
         } catch (Exception e) {
-            e.printStackTrace();
             try {
                 processDispatchResult(req, resp, new MyModelAndView("500", new HashMap<String, Object>() {
                     {
                         put("detail", "Exception Code : 500\nException Detail:");
-                        put("message", e.getCause().getMessage() == null ? "报错了" : e.getCause().getMessage());
+                        put("message", e.getCause().getCause().getMessage() == null ? "报错了" : e.getCause().getCause().getMessage());
                         put("stackTrace", Arrays.toString(e.getStackTrace()));
                     }
                 }));
@@ -143,7 +142,7 @@ public class MyDispatcherServlet extends HttpServlet {
 
 
     /**
-     * 功能描述: 初始化核心组件
+     * 功能描述: 初始化核心组件 在Spring中有九大核心组件，这里只实现三种
      *
      * @param context
      * @创建人: 我恰芙蓉王
@@ -152,23 +151,23 @@ public class MyDispatcherServlet extends HttpServlet {
      **/
     protected void initStrategies(MyApplicationContext context) {
         //多文件上传组件
-//        initMultipartResolver(context);
+        //initMultipartResolver(context);
         //初始化本地语言环境
-//        initLocaleResolver(context);
+        //initLocaleResolver(context);
         //初始化模板处理器
-//        initThemeResolver(context);
+        //initThemeResolver(context);
         //初始化请求分发处理器
         initHandlerMappings(context);
         //初始化参数适配器
         initHandlerAdapters(context);
         //初始化异常拦截器
-//        initHandlerExceptionResolvers(context);
+        //initHandlerExceptionResolvers(context);
         //初始化视图预处理器
-//        initRequestToViewNameTranslator(context);
+        //initRequestToViewNameTranslator(context);
         //初始化视图转换器
         initViewResolvers(context);
         //缓存管理器(值栈)
-//        initFlashMapManager(context);
+        //initFlashMapManager(context);
     }
 
     /**
